@@ -1,0 +1,1 @@
+python -m PyInstaller --onefile --noconsole --name app --add-data "templates;templates" --add-data "index.html;." --add-data "login.html;." app.py
