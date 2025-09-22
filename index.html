@@ -92,6 +92,7 @@
     <div class="topbar">
       <h1>모니터 UI <span class="subtitle">/ Monitor · CH1–CH4</span></h1>
       <div>
+        <button class="btn ghost" id="btnReboot" title="재시작">Reboot</button>
         <button class="btn ghost" id="btnLogout" title="로그아웃">Logout</button>
       </div>
     </div>
@@ -177,7 +178,8 @@
     const ENDPOINTS = {
       record:'/record', stop:'/stop', capture:'/capture',
       getCfg:'/config', setCfg:'/config',
-      me:'/auth/me'
+      me:'/auth/me',
+      reboot:'/reboot'
     };
 
     // ======= Auth Gate helpers =======
@@ -281,6 +283,13 @@
         return;
       }
 
+      // Reboot（通过后端代理）
+      if (btn.id === 'btnReboot') {
+        if (!confirm('정말로 재시작할까요?')) return;
+        await callAPI(ENDPOINTS.reboot, 'POST');  // ← 必须是 POST
+        toast('장치 재시작 중… 60–90초 후 새로고침');
+        return;
+      }
       // Per-channel controls
       if(btn.dataset.action){
         const action = btn.dataset.action;

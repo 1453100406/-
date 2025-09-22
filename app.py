@@ -385,6 +385,23 @@ def capture():
 # =========================
 # 端口占位（保留）
 # =========================
+# 原始路由
+@app.post('/reboot')
+@auth_required
+def reboot():
+    url = _url("/api/v2.0/system/control/reboot")
+    r = session.post(url, auth=_auth_tuple(), timeout=CFG["timeout"],
+                     verify=CFG["verify_ssl"], headers={"Accept":"application/json"}, data='')
+    if 200 <= r.status_code < 300:
+        return jsonify({"ok": True, "status": r.status_code})
+    return jsonify({"ok": False, "error": f"HTTP {r.status_code}", "text": (r.text or '')[:300]}), 502
+
+# —— 兼容旧前端的别名路径 —— #
+app.add_url_rule('/pearl/reboot', 'reboot_alias', reboot, methods=['POST'])
+
+
+
+
 @app.get('/port/2')
 def get_port2():
     return jsonify({"mac": "00:11:22:33:44:55", "ip": "192.168.1.20", "mask": "255.255.255.0"})
